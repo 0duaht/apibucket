@@ -1,0 +1,11 @@
+{
+  "name": "b-list",
+  "scripts": {
+    "postdeploy": "bundle exec rake db:migrate"
+  },
+  "env": {
+  },
+  "addons": [
+    "heroku-postgresql"
+  ]
+}
