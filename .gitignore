@@ -16,3 +16,4 @@
 !/log/.keep
 /tmp
 /README.rdoc
+/.rspec
