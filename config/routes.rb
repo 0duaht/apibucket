@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
-  namespace :api, path: "", constraints: {subdomain: "api"} do
+  namespace :api do
     namespace :v1 do
-      resources :bucketlists, only: [:create, :destroy, :index, :show, :update] do
+      resources :bucketlists, only:
+        [:create, :destroy, :index,
+         :show, :update] do
         resources :items, only: [:create, :destroy, :update]
       end
       namespace :auth do
