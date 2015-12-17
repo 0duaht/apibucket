@@ -5,6 +5,7 @@ gem "spring", :group => :development
 gem "byebug", :group => :development
 gem "sqlite3", group: :development
 gem "rspec-rails"
+gem "active_model_serializers"
 gem "codeclimate-test-reporter", group: :test, require: nil
 gem "pg", group: :production
 # To use ActiveModel has_secure_password
