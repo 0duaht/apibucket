@@ -2,6 +2,7 @@ source "https://rubygems.org"
 gem "rails", "4.2.4"
 gem "rails-api"
 gem "spring", :group => :development
+gem "byebug", :group => :development
 gem "sqlite3", group: :development
 gem "rspec-rails"
 gem "codeclimate-test-reporter", group: :test, require: nil
