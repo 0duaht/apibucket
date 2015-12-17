@@ -7,6 +7,6 @@ class ApiConstraint
 
   def matches?(request)
     request.headers.fetch(:accept).
-      include?("vnd.apibucket.#{version}+json")
+      include?("vnd.apibucket.v#{version}+json")
   end
 end
