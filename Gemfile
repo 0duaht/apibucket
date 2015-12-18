@@ -18,6 +18,7 @@ group :test do
   gem "codeclimate-test-reporter", require: nil
   gem "factory_girl_rails"
   gem "simplecov", require: false
+  gem "database_cleaner"
 end
 group :production do
   gem "puma"
