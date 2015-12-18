@@ -1,6 +1,8 @@
 module Api
   module V1
     class BucketlistsController < ApplicationController
+      before_action :authenticate_token
+
       def index
       end
 
