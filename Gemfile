@@ -5,6 +5,8 @@ gem "rspec-rails"
 gem "bcrypt"
 gem "active_model_serializers"
 gem "validates_email_format_of"
+gem "jwt"
+gem "simple_command"
 
 group :development, :test do
   gem "spring"
