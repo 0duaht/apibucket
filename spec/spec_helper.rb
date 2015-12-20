@@ -12,4 +12,7 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
   config.include FactoryGirl::Syntax::Methods
+  config.before(:all) do
+    Rails.application.load_seed # loading seeds
+  end
 end

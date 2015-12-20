@@ -9,9 +9,7 @@ module Api
     end
 
     def call
-      if user
-        user
-      end
+      user
     end
 
     private
@@ -46,10 +44,17 @@ module Api
       def user_by_token(token)
         decoded_token = Api::TokenProvider.decode(token)
         if decoded_token
-          User.find decoded_token["user_id"]
+          match_id_to_user decoded_token["user_id"]
         else
           errors[:request_authorization] = "Token invalid."
         end
+      end
+
+      def match_id_to_user(user_id)
+        user = User.find_by_id(user_id)
+        errors[:request_authorization] = "Token invalid." unless user
+
+        user
       end
   end
 end
