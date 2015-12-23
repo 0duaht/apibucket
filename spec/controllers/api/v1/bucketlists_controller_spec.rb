@@ -65,16 +65,92 @@ describe "BucketlistsController", type: :request do
     end
 
     context "when sending messages with a valid token" do
-      it "returns a success message" do
-        signin_helper
-        parsed_response = HashWithIndifferentAccess.new(
-          JSON.parse(response.body)
-        )
-        token = parsed_response[:token]
-
+      it "returns a success message when trying to view bucketlists" do
+        token = token_helper
         get "/bucketlists", {},
             HTTP_AUTHORIZATION: "token #{token}",
             HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
+        expect(response.status).to eql(200)
+      end
+
+      it "returns an error status when trying to create "\
+      "a bucketlist with no parameters" do
+        token = token_helper
+        post "/bucketlists", {},
+             HTTP_AUTHORIZATION: "token #{token}",
+             HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
+        expect(response.status).to eql(400)
+      end
+
+      it "returns a success status when trying to create "\
+      "a bucketlist with valid parameters" do
+        token = token_helper
+        post "/bucketlists", { "name": "New Bucketlist" },
+             HTTP_AUTHORIZATION: "token #{token}",
+             HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
+        expect(response.status).to eql(201)
+      end
+
+      it "returns a success status when trying to view a bucketlist" do
+        token = token_helper
+        get "/bucketlists/#{random_id}", {},
+            HTTP_AUTHORIZATION: "token #{token}",
+            HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
+        expect(response.status).to eql(200)
+      end
+
+      it "returns a success status when trying to view an empty bucketlist" do
+        user = create(:user)
+        token = token_helper(user.email, user.password)
+        get "/bucketlists", {},
+            HTTP_AUTHORIZATION: "token #{token}",
+            HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
+        expect(response.status).to eql(204)
+
+        user.destroy
+      end
+
+      it "returns an error status when trying to view an invalid bucketlist" do
+        token = token_helper
+        get "/bucketlists/#{invalid_id}", {},
+            HTTP_AUTHORIZATION: "token #{token}",
+            HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
+        expect(response.status).to eql(404)
+      end
+
+      it "returns a success status when trying to edit "\
+      "a bucketlist with valid parameters" do
+        token = token_helper
+        put "/bucketlists/#{random_id}", { "name": "New Bucketlist" },
+            HTTP_AUTHORIZATION: "token #{token}",
+            HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
+        expect(response.status).to eql(200)
+      end
+
+      it "returns an error status when trying to edit "\
+      "a bucketlist with invalid parameters" do
+        token = token_helper
+        put "/bucketlists/#{random_id}", { "name": "s" },
+            HTTP_AUTHORIZATION: "token #{token}",
+            HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
+        expect(response.status).to eql(400)
+      end
+
+      it "returns an error status when trying to edit "\
+      "a bucketlist with no parameters" do
+        token = token_helper
+        put "/bucketlists/#{random_id}", {},
+            HTTP_AUTHORIZATION: "token #{token}",
+            HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
+        expect(response.status).to eql(400)
+      end
+
+      it "returns a success status when trying to delete "\
+      "a bucketlist" do
+        token = token_helper
+        delete "/bucketlists/#{random_id}", {},
+               HTTP_AUTHORIZATION: "token #{token}",
+               HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
         expect(response.status).to eql(200)
       end
     end

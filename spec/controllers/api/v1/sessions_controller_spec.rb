@@ -1,6 +1,8 @@
 require "rails_helper"
 
 describe "SessionsController", type: :request do
+  include_context "shared stuff"
+
   context "when version is not specified through Accept header" do
     it "fails to process request" do
       expect { post "/auth/login/" }.
@@ -27,7 +29,7 @@ describe "SessionsController", type: :request do
       user = create(:user)
 
       post "/auth/login",
-           { email: "invalid@email.com", password: user.password },
+           { email: invalid_test_email, password: user.password },
            HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
       expect(response.status).to eql(401)
 

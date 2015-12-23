@@ -1,5 +1,5 @@
 class Item < ActiveRecord::Base
-  belongs_to :bucketlist
+  include ErrorHandler
 
-  validates :name, presence: true
+  belongs_to :bucketlist
 end
