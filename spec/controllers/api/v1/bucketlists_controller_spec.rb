@@ -154,5 +154,65 @@ describe "BucketlistsController", type: :request do
         expect(response.status).to eql(200)
       end
     end
+
+    context "pagination test" do
+      it "sends 20 bucketlists when limit is not specified" do
+        token = token_helper
+        get "/bucketlists", {},
+            HTTP_AUTHORIZATION: "token #{token}",
+            HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
+
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response.count).to eql(20)
+      end
+
+      it "replies with appropriate number of bucketlists "\
+        "when limit is specified" do
+        token = token_helper
+        count = 35
+        get "/bucketlists?limit=#{count}", {},
+            HTTP_AUTHORIZATION: "token #{token}",
+            HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
+
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response.count).to eql(count)
+      end
+
+      it "defaults to 100 when limit specified is greater than 100" do
+        token = token_helper
+        count = 115
+        get "/bucketlists?limit=#{count}", {},
+            HTTP_AUTHORIZATION: "token #{token}",
+            HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
+
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response.count).to eql(100)
+      end
+
+      it "serves correct page when page is specified" do
+        token = token_helper
+        count = 50
+        page = 2
+        get "/bucketlists?limit=#{count}&page=#{page}", {},
+            HTTP_AUTHORIZATION: "token #{token}",
+            HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
+
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response.first["name"]).to eql("Bucketlist 51")
+        expect(parsed_response.last["name"]).to eql("Bucketlist 100")
+      end
+    end
+
+    context "while searching" do
+      it "returns no bucketlists if none match the search parameter" do
+        token = token_helper
+        match = "non-matche"
+        get "/bucketlists?q=#{match}", {},
+            HTTP_AUTHORIZATION: "token #{token}",
+            HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
+
+        expect(response.status).to eql(204)
+      end
+    end
   end
 end

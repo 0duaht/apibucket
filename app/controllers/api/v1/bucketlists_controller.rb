@@ -6,8 +6,9 @@ module Api
       before_action :get_current_bucketlist, only: [:show, :update, :destroy]
 
       def index
-        bucketlists = @current_user.bucketlists
-        display_all bucketlists
+        all_bucketlists = @current_user.bucketlists
+        bucketlists = Api::Search.new(all_bucketlists, params).filter
+        display_all Api::Pagination.new(bucketlists, params).start
       end
 
       def create

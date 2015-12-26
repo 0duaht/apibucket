@@ -9,13 +9,13 @@ Item.destroy_all
     password: "user#{n + 1}pass"
   )
 
-  3.times do |i|
+  120.times do |i|
     bucketlist = Bucketlist.create(
       name: "Bucketlist #{i + 1}",
       user_id: user.id
     )
 
-    10.times do |j|
+    1.times do |j|
       Item.create(
         name: "Item #{j + 1}",
         bucketlist_id: bucketlist.id
