@@ -14,15 +14,13 @@ module Api
       end
 
       def update
+        authorize_action :update
         return if params_arg_length_is_zero
-        if @item.update item_params
-          render json: { "message": "Item updated successfully" }
-        else
-          render json: { "message": @item.get_error }, status: 400
-        end
+        update_helper
       end
 
       def destroy
+        authorize_action :destroy
         @item.destroy
         render json: { "message": "Item deleted successfully" }
       end
@@ -33,10 +31,22 @@ module Api
           params.permit(:name, :done)
         end
 
+        def authorize_action(action)
+          authorize! action, @item
+        end
+
         def get_current_item
           @item = Item.find_by_id(params[:id])
           render json: { "message": "Invalid ID. Item not found." },
                  status: 404 if @item.nil?
+        end
+
+        def update_helper
+          if @item.update item_params
+            render json: { "message": "Item updated successfully" }
+          else
+            render json: { "message": @item.get_error }, status: 400
+          end
         end
 
         def params_arg_length_is_zero

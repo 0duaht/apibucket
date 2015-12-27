@@ -1,14 +1,22 @@
 module Api
   module Test
     shared_context "shared stuff" do
-      let(:random_id) { Bucketlist.order("RANDOM()").first.id }
-      let(:random_item_id) { Item.order("RANDOM()").first.id }
+      let(:random_id) do 
+        User.first.bucketlists.order("RANDOM()").first.id
+      end
+      let(:unauthorized_random_id) do
+        User.last.bucketlists.order("RANDOM()").first.id
+      end
+      let(:random_item_id) do
+        User.first.bucketlists.last.items.order("RANDOM()").first.id
+      end
       let(:valid_email) { "user1@seed.com" }
       let(:test_email) { "test@seed.com" }
       let(:invalid_test_email) { "test seed" }
       let(:test_pass) { "testpass" }
       let(:valid_pass) { "user1pass" }
       let(:invalid_id) { "u" }
+
       before(:all) do
         DatabaseCleaner.strategy = :truncation
       end

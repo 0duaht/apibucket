@@ -20,20 +20,18 @@ module Api
       end
 
       def show
+        authorize_action :show
         render json: @bucketlist.to_json(include: :items)
       end
 
       def update
+        authorize_action :update
         return if params_arg_length_is_zero
-        if @bucketlist.update bucketlist_params
-          render json: { "message": "Bucketlist updated successfully" }
-        else
-          render json: { "message": @bucketlist.get_error },
-                 status: 400
-        end
+        update_helper
       end
 
       def destroy
+        authorize_action :destroy
         @bucketlist.destroy
         render json: { "message": "Bucketlist deleted successfully" }
       end
@@ -55,6 +53,19 @@ module Api
             render json: { "message": "Bucketlist empty" }, status: 204
           else
             render json: bucketlists.to_json(include: :items)
+          end
+        end
+
+        def authorize_action(action)
+          authorize! action, @bucketlist
+        end
+
+        def update_helper
+          if @bucketlist.update bucketlist_params
+            render json: { "message": "Bucketlist updated successfully" }
+          else
+            render json: { "message": @bucketlist.get_error },
+                   status: 400
           end
         end
 

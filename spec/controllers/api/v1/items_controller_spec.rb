@@ -110,6 +110,15 @@ describe "ItemsController", type: :request do
       expect(response.status).to eql(404)
     end
 
+    it "returns an unauthorized status when trying "\
+      "to edit an item in a different user's bucketlist" do
+      token = token_helper
+      put "/bucketlists/#{random_id}/items/#{unauthorized_random_id}", {},
+          HTTP_AUTHORIZATION: "token #{token}",
+          HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
+      expect(response.status).to eql(401)
+    end
+
     it "returns a success status when trying to delete "\
       "an item" do
         token = token_helper

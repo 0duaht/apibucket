@@ -6,6 +6,7 @@ gem "bcrypt"
 gem "active_model_serializers"
 gem "validates_email_format_of"
 gem "jwt"
+gem "cancancan"
 gem "simple_command"
 
 group :development, :test do
