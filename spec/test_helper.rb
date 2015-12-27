@@ -1,7 +1,7 @@
 module Api
   module Test
     shared_context "shared stuff" do
-      let(:random_id) do 
+      let(:random_id) do
         User.first.bucketlists.order("RANDOM()").first.id
       end
       let(:unauthorized_random_id) do

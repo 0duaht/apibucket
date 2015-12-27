@@ -46,7 +46,7 @@ describe "BucketlistsController", type: :request do
           JSON.parse(response.body)
         )
         expect(
-          parsed_response[:errors][:request_authorization]
+          parsed_response[:message]
         ).to include("Token required")
       end
     end
@@ -59,7 +59,7 @@ describe "BucketlistsController", type: :request do
           JSON.parse(response.body)
         )
         expect(
-          parsed_response[:errors][:request_authorization]
+          parsed_response[:message]
         ).to include("Token invalid")
       end
     end

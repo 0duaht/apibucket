@@ -21,7 +21,7 @@ module Api
       def user
         user = User.find_by_email(email)
         return user if user && user.authenticate(password)
-        errors[:user_authentication] = "Login Failed. Credentials Invalid."
+        errors[:message] = "Login Failed. Credentials Invalid."
 
         nil
       end

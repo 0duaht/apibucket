@@ -34,7 +34,7 @@ module Api
 
       def token_empty?(token)
         if token.nil?
-          errors[:request_authorization] = "Token required. "\
+          errors[:message] = "Token required. "\
           "Please see documentation for usage instructions."
 
           true
@@ -46,13 +46,13 @@ module Api
         if decoded_token
           match_id_to_user decoded_token["user_id"]
         else
-          errors[:request_authorization] = "Token invalid."
+          errors[:message] = "Token invalid."
         end
       end
 
       def match_id_to_user(user_id)
         user = User.find_by_id(user_id)
-        errors[:request_authorization] = "Token invalid." unless user
+        errors[:message] = "Token invalid." unless user
 
         user
       end

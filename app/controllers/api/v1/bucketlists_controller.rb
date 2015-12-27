@@ -6,7 +6,7 @@ module Api
       before_action :get_current_bucketlist, only: [:show, :update, :destroy]
 
       def index
-        all_bucketlists = @current_user.bucketlists
+        all_bucketlists = current_user.bucketlists
         bucketlists = Api::Search.new(all_bucketlists, params).filter
         display_all Api::Pagination.new(bucketlists, params).start
       end
@@ -14,14 +14,14 @@ module Api
       def create
         bucketlist = Bucketlist.new(
           name: params[:name],
-          user_id: @current_user.id
+          user_id: current_user.id
         )
         save bucketlist
       end
 
       def show
         authorize_action :show
-        render json: @bucketlist.to_json(include: :items)
+        render json: @bucketlist
       end
 
       def update
@@ -50,9 +50,9 @@ module Api
 
         def display_all(bucketlists)
           if bucketlists.empty?
-            render json: { "message": "Bucketlist empty" }, status: 204
+            head 204
           else
-            render json: bucketlists.to_json(include: :items)
+            render json: bucketlists, root: false
           end
         end
 
