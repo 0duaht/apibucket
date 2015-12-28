@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::API
   include CanCan::ControllerAdditions
+  include ActionController::Serialization
   attr_reader :current_user
 
   def authenticate_token

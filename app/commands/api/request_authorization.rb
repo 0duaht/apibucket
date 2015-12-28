@@ -52,7 +52,7 @@ module Api
 
       def match_id_to_user(user_id)
         user = User.find_by_id(user_id)
-        errors[:message] = "Token invalid." unless user
+        errors[:message] = "Token invalid." unless user && !user.api_token.nil?
 
         user
       end
