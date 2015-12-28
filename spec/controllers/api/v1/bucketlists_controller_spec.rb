@@ -4,9 +4,9 @@ describe "BucketlistsController", type: :request do
   include_context "shared stuff"
 
   context "when version is not specified through Accept header" do
-    it "fails to process request" do
-      expect { get "/bucketlists" }.
-        to raise_error ActionController::RoutingError
+    it "processes with default api version - v1" do
+      get "/bucketlists"
+      expect(response.status).to eql(401)
     end
   end
 

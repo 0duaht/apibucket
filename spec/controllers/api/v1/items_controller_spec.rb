@@ -5,8 +5,8 @@ describe "ItemsController", type: :request do
 
   context "when version is not specified through Accept header" do
     it "fails to process request" do
-      expect { post "/bucketlists/1/items/" }.
-        to raise_error ActionController::RoutingError
+      post "/bucketlists/1/items/", {}
+      expect(response.status).to eql(401)
     end
   end
 

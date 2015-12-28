@@ -4,9 +4,9 @@ describe "SessionsController", type: :request do
   include_context "shared stuff"
 
   context "when version is not specified through Accept header" do
-    it "fails to process request" do
-      expect { post "/auth/login/" }.
-        to raise_error ActionController::RoutingError
+    it "processes with default api version - v1" do
+      post "/auth/login", {}
+      expect(response.status).to eql(401)
     end
   end
 
