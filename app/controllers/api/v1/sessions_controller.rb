@@ -1,6 +1,8 @@
 module Api
   module V1
     class SessionsController < ApplicationController
+      before_action :authenticate_token, only: [:logout]
+
       def login
         auth_command = Api::UserAuthentication.call(
           params[:email],
@@ -10,16 +12,17 @@ module Api
       end
 
       def logout
+        current_user.update api_token: nil
+        render json: { "message": "Logged out successfully." }
       end
 
       private
 
         def respond_with_command(auth_command)
           if auth_command.success?
-            render json: { "token": auth_command.result }
+            render json: auth_command.result
           else
-            render json: { "errors": auth_command.errors },
-                   status: :unauthorized
+            render json: auth_command.errors, status: :unauthorized
           end
         end
     end

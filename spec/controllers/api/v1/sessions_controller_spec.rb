@@ -20,7 +20,7 @@ describe "SessionsController", type: :request do
     it "processes request to log-out correctly" do
       get "/auth/logout", {},
           HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
-      expect(response).to be_successful
+      expect(response.status).to eql(401)
     end
   end
 
@@ -55,6 +55,25 @@ describe "SessionsController", type: :request do
       expect(parsed_response[:token]).to eql(user.api_token)
 
       user.destroy
+    end
+  end
+
+  context "when trying to log out" do
+    it "logs out successfully" do
+      token = token_helper
+      get "/auth/logout", {},
+          HTTP_AUTHORIZATION: "token #{token}",
+          HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
+
+      parsed_response = JSON.parse(response.body)
+      expect(parsed_response["message"]).to eql("Logged out successfully.")
+
+      get "/bucketlists", {},
+          HTTP_AUTHORIZATION: "token #{token}",
+          HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
+
+      parsed_response = JSON.parse(response.body)
+      expect(parsed_response["message"]).to eql("Token invalid.")
     end
   end
 end
