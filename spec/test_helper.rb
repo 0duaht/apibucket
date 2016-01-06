@@ -16,6 +16,7 @@ module Api
       let(:test_pass) { "testpass" }
       let(:valid_pass) { "user1pass" }
       let(:invalid_id) { "u" }
+      let(:api_documentation_url) { "http://docs.apibucket.apiary.io/" }
 
       before(:all) do
         DatabaseCleaner.strategy = :truncation
