@@ -1,56 +1,56 @@
 module Api
   module V1
     class ItemsController < ApplicationController
-      include UpdateHandler
+      include SaveHelper
 
-      before_action :get_current_item, except: [:create]
+      before_action :check_id_validity, :cancan_authorize,
+                    except: [:create]
 
       def create
-        item = Item.new(
-          name: params[:name],
-          bucketlist_id: params[:bucketlist_id]
-        )
+        item = Item.new(item_params)
         save item
       end
 
       def update
-        authorize_action :update
-        return if params_arg_length_is_zero
-        update_helper
+        update_helper unless no_extra_params_passed
       end
 
       def destroy
-        authorize_action :destroy
-        @item.destroy
+        item.destroy
         render json: { "message": "Item deleted successfully" }
       end
 
       private
 
         def item_params
-          params.permit(:name, :done)
+          params.permit(:name, :done).merge(
+            bucketlist_id: params[:bucketlist_id]
+          )
         end
 
-        def authorize_action(action)
-          authorize! action, @item
+        def item
+          @item ||= Item.find_by_id(params[:id])
         end
 
-        def get_current_item
-          @item = Item.find_by_id(params[:id])
+        def check_id_validity
           render json: { "message": "Invalid ID. Item not found." },
-                 status: 404 if @item.nil?
+                 status: 404 if item.nil?
+        end
+
+        def cancan_authorize
+          authorize! params[:action], item
         end
 
         def update_helper
-          if @item.update item_params
+          if item.update item_params
             render json: { "message": "Item updated successfully" }
           else
-            render json: { "message": @item.get_error }, status: 400
+            render json: { "message": item.get_error }, status: 400
           end
         end
 
-        def params_arg_length_is_zero
-          if item_params.count == 0
+        def no_extra_params_passed
+          if item_params.count == 1
             render json: {
               "message": "Parameters empty. Item could not updated."
             }, status: 400

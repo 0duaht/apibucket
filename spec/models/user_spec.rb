@@ -15,10 +15,10 @@ RSpec.describe User, type: :model do
     end
 
     it "email is not unique" do
-      create(:user)
+      create :user
       user = build(:user)
       expect(user).to be_invalid
-      expect(user.get_error).to eql("Email has already been taken")
+      expect(user.get_error).to eql "Email has already been taken"
     end
   end
 end
