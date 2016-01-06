@@ -8,7 +8,7 @@ module Api
           params[:email],
           params[:password]
         )
-        respond_with_command(auth_command)
+        respond_with_command auth_command
       end
 
       def logout

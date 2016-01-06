@@ -1,9 +1,10 @@
 module Api
   module V1
     class BucketlistsController < ApplicationController
-      include UpdateHandler
+      include SaveHelper
 
-      before_action :get_current_bucketlist, only: [:show, :update, :destroy]
+      before_action :check_id_validity, :cancan_authorize,
+                    only: [:show, :update, :destroy]
 
       def index
         all_bucketlists = current_user.bucketlists
@@ -12,40 +13,36 @@ module Api
       end
 
       def create
-        bucketlist = Bucketlist.new(
-          name: params[:name],
-          user_id: current_user.id
-        )
+        bucketlist = Bucketlist.new(bucketlist_params)
         save bucketlist
       end
 
       def show
-        authorize_action :show
-        render json: @bucketlist
+        render json: bucketlist
       end
 
       def update
-        authorize_action :update
-        return if params_arg_length_is_zero
-        update_helper
+        update_helper unless no_extra_params_passed
       end
 
       def destroy
-        authorize_action :destroy
-        @bucketlist.destroy
+        bucketlist.destroy
         render json: { "message": "Bucketlist deleted successfully" }
       end
 
       private
 
-        def get_current_bucketlist
-          @bucketlist = Bucketlist.find_by_id(params[:id])
+        def check_id_validity
           render json: { "message": "Invalid ID. Bucketlist not found." },
-                 status: 404 if @bucketlist.nil?
+                 status: 404 if bucketlist.nil?
+        end
+
+        def bucketlist
+          @bucketlist ||= Bucketlist.find_by_id(params[:id])
         end
 
         def bucketlist_params
-          params.permit(:name)
+          params.permit(:name).merge(user_id: current_user.id)
         end
 
         def display_all(bucketlists)
@@ -56,21 +53,21 @@ module Api
           end
         end
 
-        def authorize_action(action)
-          authorize! action, @bucketlist
+        def cancan_authorize
+          authorize! params[:action], bucketlist
         end
 
         def update_helper
-          if @bucketlist.update bucketlist_params
+          if bucketlist.update bucketlist_params
             render json: { "message": "Bucketlist updated successfully" }
           else
-            render json: { "message": @bucketlist.get_error },
+            render json: { "message": bucketlist.get_error },
                    status: 400
           end
         end
 
-        def params_arg_length_is_zero
-          if bucketlist_params.count == 0
+        def no_extra_params_passed
+          if bucketlist_params.count == 1
             render json: {
               "message": "Name empty. Bucketlist could not updated."
             }, status: 400
