@@ -7,6 +7,7 @@ APIBucket is an API service that allows users create bucketlists to store items.
 For full access to the API, a user account is required. After registration, an initial request is made to log in to user account. This request generates a JSON Web Token, which is returned in the response. This token is used to authenticate subsequent requests to the API. 
 
 For full documentation, and usage examples, see http://docs.apibucket.apiary.io/
+
 For API access, visit https://b-list.herokuapp.com
 
 ##API endpoints.

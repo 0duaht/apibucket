@@ -5,6 +5,8 @@ Rails.application.routes.draw do
               &routes_block
   end
 
+  root to: "root#index"
+
   namespace :api, path: "" do
     api_version_handler "1", true do
       resources :bucketlists, except: [:edit, :new] do
