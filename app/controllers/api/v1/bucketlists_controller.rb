@@ -3,6 +3,7 @@ module Api
     class BucketlistsController < ApplicationController
       include SaveHelper
 
+      before_action :authenticate_token
       before_action :check_id_validity, :cancan_authorize,
                     only: [:show, :update, :destroy]
 
@@ -26,6 +27,7 @@ module Api
       end
 
       def destroy
+        bucketlist.items.each(&:destroy)
         bucketlist.destroy
         render json: { "message": "Bucketlist deleted successfully" }
       end

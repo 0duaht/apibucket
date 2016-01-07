@@ -8,7 +8,11 @@ module Api
     end
 
     def filter
-      params[:q] ? objects.where("name LIKE ?", "%#{params[:q]}%") : objects
+      if params[:q]
+        objects.where("lower(name) LIKE ?", "%#{params[:q].downcase}%")
+      else
+        objects
+      end
     end
   end
 end

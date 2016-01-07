@@ -1,10 +1,4 @@
 module SaveHelper
-  extend ActiveSupport::Concern
-
-  included do
-    before_action :authenticate_token
-  end
-
   def save(object)
     if object.save
       render json: {

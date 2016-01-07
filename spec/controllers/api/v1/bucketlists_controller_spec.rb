@@ -3,41 +3,6 @@ require "rails_helper"
 describe "BucketlistsController", type: :request do
   include_context "shared stuff"
 
-  context "when version is not specified through Accept header" do
-    it "processes with default api version - v1" do
-      get "/bucketlists"
-      expect(response.status).to eql 401
-    end
-  end
-
-  context "when version is specified through Accept header" do
-    it "processes request to create-bucketlist correctly" do
-      post "/bucketlists", HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
-      expect(response.status).to eql 401
-    end
-
-    it "processes request to list-all-bucketlists correctly" do
-      get "/bucketlists", HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
-      expect(response.status).to eql 401
-    end
-
-    it "processes request to get-single-bucketlist correctly" do
-      get "/bucketlists/1", HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
-      expect(response.status).to eql 401
-    end
-
-    it "processes request to update-single-bucketlist correctly" do
-      put "/bucketlists/1", HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
-      expect(response.status).to eql 401
-    end
-
-    it "processes request to delete-single-bucketlist correctly" do
-      delete "/bucketlists/1",
-             HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
-      expect(response.status).to eql 401
-    end
-  end
-
   context "token authentication" do
     context "when sending requests without a token" do
       it "returns an error message" do
@@ -60,8 +25,16 @@ describe "BucketlistsController", type: :request do
       end
     end
 
-    context "when sending messages with a valid token" do
-      it "returns a success message when trying to view bucketlists" do
+    context "when sending requests with a valid token" do
+      it "processes requests successfully with default api version "\
+      "when version is not specified with Accept header" do
+        token = token_helper
+        get "/bucketlists", {},
+            HTTP_AUTHORIZATION: "token #{token}"
+        expect(response.status).to eql 200
+      end
+
+      it "returns a success status when trying to view bucketlists" do
         token = token_helper
         get "/bucketlists", {},
             HTTP_AUTHORIZATION: "token #{token}",

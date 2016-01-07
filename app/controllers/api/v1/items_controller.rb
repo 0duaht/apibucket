@@ -3,6 +3,7 @@ module Api
     class ItemsController < ApplicationController
       include SaveHelper
 
+      before_action :authenticate_token
       before_action :check_id_validity, :cancan_authorize,
                     except: [:create]
 

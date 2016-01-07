@@ -3,27 +3,6 @@ require "rails_helper"
 describe "SessionsController", type: :request do
   include_context "shared stuff"
 
-  context "when version is not specified through Accept header" do
-    it "processes with default api version - v1" do
-      post "/auth/login"
-      expect(response.status).to eql 401
-    end
-  end
-
-  context "when version is specified through Accept header" do
-    it "processes request to log-in correctly" do
-      post "/auth/login",
-           HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
-      expect(response.status).to eql 401
-    end
-
-    it "processes request to log-out correctly" do
-      get "/auth/logout",
-          HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
-      expect(response.status).to eql 401
-    end
-  end
-
   context "when trying to log in" do
     it "fails when invalid authentication credentials are passed" do
       user = create(:user)

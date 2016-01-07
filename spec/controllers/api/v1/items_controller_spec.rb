@@ -3,33 +3,6 @@ require "rails_helper"
 describe "ItemsController", type: :request do
   include_context "shared stuff"
 
-  context "when version is not specified through Accept header" do
-    it "fails to process request" do
-      post "/bucketlists/1/items/"
-      expect(response.status).to eql 401
-    end
-  end
-
-  context "when version is specified through Accept header" do
-    it "processes request to create-new-item-in-bucketlist correctly" do
-      post "/bucketlists/1/items/",
-           HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
-      expect(response.status).to eql 401
-    end
-
-    it "processes request to update-an-item-in-bucketlist correctly" do
-      put "/bucketlists/1/items/1",
-          HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
-      expect(response.status).to eql 401
-    end
-
-    it "processes request to delete-an-item-in-bucketlist correctly" do
-      delete "/bucketlists/1/items/1",
-             HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
-      expect(response.status).to eql 401
-    end
-  end
-
   context "when sending messages with a valid token" do
     it "returns an error status when trying to create "\
     "an item with no parameters" do
@@ -56,6 +29,17 @@ describe "ItemsController", type: :request do
            HTTP_AUTHORIZATION: "token #{token}",
            HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
       expect(response.status).to eql 400
+    end
+
+    it "processes requests successfully with default api version "\
+      "when version is not specified with Accept header" do
+      token = token_helper
+      post "/bucketlists/#{random_id}/items",
+           {
+             "name": "New Item"
+           },
+           HTTP_AUTHORIZATION: "token #{token}"
+      expect(response.status).to eql 201
     end
 
     it "returns a success status when trying to create "\
