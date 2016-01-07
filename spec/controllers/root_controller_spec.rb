@@ -5,6 +5,6 @@ describe "RootController", type: :request do
 
   it "redirects to documentation page when home page is visited" do
     get root_path
-    expect(response).to redirect_to(api_documentation_url)
+    expect(response).to redirect_to api_documentation_url
   end
 end

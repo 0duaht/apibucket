@@ -6,61 +6,57 @@ describe "BucketlistsController", type: :request do
   context "when version is not specified through Accept header" do
     it "processes with default api version - v1" do
       get "/bucketlists"
-      expect(response.status).to eql(401)
+      expect(response.status).to eql 401
     end
   end
 
   context "when version is specified through Accept header" do
     it "processes request to create-bucketlist correctly" do
-      post "/bucketlists", {}, HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
-      expect(response.status).to eql(401)
+      post "/bucketlists", HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
+      expect(response.status).to eql 401
     end
 
     it "processes request to list-all-bucketlists correctly" do
-      get "/bucketlists", {}, HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
-      expect(response.status).to eql(401)
+      get "/bucketlists", HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
+      expect(response.status).to eql 401
     end
 
     it "processes request to get-single-bucketlist correctly" do
-      get "/bucketlists/1", {}, HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
-      expect(response.status).to eql(401)
+      get "/bucketlists/1", HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
+      expect(response.status).to eql 401
     end
 
-    it "processes 8request to update-single-bucketlist correctly" do
-      put "/bucketlists/1", {}, HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
-      expect(response.status).to eql(401)
+    it "processes request to update-single-bucketlist correctly" do
+      put "/bucketlists/1", HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
+      expect(response.status).to eql 401
     end
 
     it "processes request to delete-single-bucketlist correctly" do
-      delete "/bucketlists/1", {},
+      delete "/bucketlists/1",
              HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
-      expect(response.status).to eql(401)
+      expect(response.status).to eql 401
     end
   end
 
   context "token authentication" do
     context "when sending requests without a token" do
       it "returns an error message" do
-        get "/bucketlists", {}, HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
-        parsed_response = HashWithIndifferentAccess.new(
-          JSON.parse(response.body)
-        )
+        get "/bucketlists", HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
+        parsed_response = JSON.parse(response.body)
         expect(
-          parsed_response[:message]
-        ).to include("Token required")
+          parsed_response["message"]
+        ).to include "Token required"
       end
     end
 
     context "when sending requests with an invalid token" do
       it "returns an error message" do
-        get "/bucketlists?token=asdflkadsf", {},
+        get "/bucketlists?token=asdflkadsf",
             HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
-        parsed_response = HashWithIndifferentAccess.new(
-          JSON.parse(response.body)
-        )
+        parsed_response = JSON.parse(response.body)
         expect(
-          parsed_response[:message]
-        ).to include("Token invalid")
+          parsed_response["message"]
+        ).to include "Token invalid"
       end
     end
 
@@ -70,7 +66,7 @@ describe "BucketlistsController", type: :request do
         get "/bucketlists", {},
             HTTP_AUTHORIZATION: "token #{token}",
             HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
-        expect(response.status).to eql(200)
+        expect(response.status).to eql 200
       end
 
       it "returns an error status when trying to create "\
@@ -79,7 +75,7 @@ describe "BucketlistsController", type: :request do
         post "/bucketlists", {},
              HTTP_AUTHORIZATION: "token #{token}",
              HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
-        expect(response.status).to eql(400)
+        expect(response.status).to eql 400
       end
 
       it "returns a success status when trying to create "\
@@ -88,7 +84,7 @@ describe "BucketlistsController", type: :request do
         post "/bucketlists", { "name": "New Bucketlist" },
              HTTP_AUTHORIZATION: "token #{token}",
              HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
-        expect(response.status).to eql(201)
+        expect(response.status).to eql 201
       end
 
       it "returns a success status when trying to view a bucketlist" do
@@ -96,7 +92,7 @@ describe "BucketlistsController", type: :request do
         get "/bucketlists/#{random_id}", {},
             HTTP_AUTHORIZATION: "token #{token}",
             HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
-        expect(response.status).to eql(200)
+        expect(response.status).to eql 200
       end
 
       it "returns a success status when trying to view an empty bucketlist" do
@@ -105,7 +101,7 @@ describe "BucketlistsController", type: :request do
         get "/bucketlists", {},
             HTTP_AUTHORIZATION: "token #{token}",
             HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
-        expect(response.status).to eql(204)
+        expect(response.status).to eql 204
 
         user.destroy
       end
@@ -115,7 +111,7 @@ describe "BucketlistsController", type: :request do
         get "/bucketlists/#{invalid_id}", {},
             HTTP_AUTHORIZATION: "token #{token}",
             HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
-        expect(response.status).to eql(404)
+        expect(response.status).to eql 404
       end
 
       it "returns an unauthorized status when trying "\
@@ -124,7 +120,7 @@ describe "BucketlistsController", type: :request do
         get "/bucketlists/#{unauthorized_random_id}", {},
             HTTP_AUTHORIZATION: "token #{token}",
             HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
-        expect(response.status).to eql(401)
+        expect(response.status).to eql 401
       end
 
       it "returns a success status when trying to edit "\
@@ -133,7 +129,7 @@ describe "BucketlistsController", type: :request do
         put "/bucketlists/#{random_id}", { "name": "New Bucketlist" },
             HTTP_AUTHORIZATION: "token #{token}",
             HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
-        expect(response.status).to eql(200)
+        expect(response.status).to eql 200
       end
 
       it "returns an error status when trying to edit "\
@@ -142,7 +138,7 @@ describe "BucketlistsController", type: :request do
         put "/bucketlists/#{random_id}", { "name": "s" },
             HTTP_AUTHORIZATION: "token #{token}",
             HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
-        expect(response.status).to eql(400)
+        expect(response.status).to eql 400
       end
 
       it "returns an error status when trying to edit "\
@@ -151,7 +147,7 @@ describe "BucketlistsController", type: :request do
         put "/bucketlists/#{random_id}", {},
             HTTP_AUTHORIZATION: "token #{token}",
             HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
-        expect(response.status).to eql(400)
+        expect(response.status).to eql 400
       end
 
       it "returns a success status when trying to delete "\
@@ -160,7 +156,7 @@ describe "BucketlistsController", type: :request do
         delete "/bucketlists/#{random_id}", {},
                HTTP_AUTHORIZATION: "token #{token}",
                HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
-        expect(response.status).to eql(200)
+        expect(response.status).to eql 200
       end
     end
 
@@ -172,7 +168,7 @@ describe "BucketlistsController", type: :request do
             HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
 
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.count).to eql(20)
+        expect(parsed_response.count).to eql 20
       end
 
       it "replies with appropriate number of bucketlists "\
@@ -184,7 +180,7 @@ describe "BucketlistsController", type: :request do
             HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
 
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.count).to eql(count)
+        expect(parsed_response.count).to eql count
       end
 
       it "defaults to 100 when limit specified is greater than 100" do
@@ -195,7 +191,7 @@ describe "BucketlistsController", type: :request do
             HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
 
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.count).to eql(100)
+        expect(parsed_response.count).to eql 100
       end
 
       it "serves correct page when page is specified" do
@@ -207,20 +203,20 @@ describe "BucketlistsController", type: :request do
             HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
 
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.first["name"]).to eql("Bucketlist 51")
-        expect(parsed_response.last["name"]).to eql("Bucketlist 100")
+        expect(parsed_response.first["name"]).to eql "Bucketlist 51"
+        expect(parsed_response.last["name"]).to eql "Bucketlist 100"
       end
     end
 
     context "while searching" do
       it "returns no bucketlists if none match the search parameter" do
         token = token_helper
-        match = "non-matche"
+        match = "non-match"
         get "/bucketlists?q=#{match}", {},
             HTTP_AUTHORIZATION: "token #{token}",
             HTTP_ACCEPT: "application/vnd.apibucket.v1+json"
 
-        expect(response.status).to eql(204)
+        expect(response.status).to eql 204
       end
     end
   end

@@ -29,11 +29,9 @@ module Api
 
       def token_helper(email = valid_email, pass = valid_pass)
         signin_helper(email, pass)
-        parsed_response = HashWithIndifferentAccess.new(
-          JSON.parse(response.body)
-        )
+        parsed_response = JSON.parse response.body
 
-        parsed_response[:token]
+        parsed_response["token"]
       end
 
       after(:all) do
