@@ -23,6 +23,7 @@ module Api
     def paginate(objects, limit, page)
       begin_index = (page - 1) * limit
       end_index = begin_index + limit
+
       objects[begin_index...end_index]
     end
   end

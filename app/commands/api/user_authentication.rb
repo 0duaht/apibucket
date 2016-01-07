@@ -11,7 +11,8 @@ module Api
     def call
       if user
         token, exp_date = Api::TokenProvider.encode(user_id: user.id)
-        user.update(api_token: token)
+        user.update api_token: token
+
         {
           "token" => token,
           "expiry_date" => exp_date.to_formatted_s(:db)
