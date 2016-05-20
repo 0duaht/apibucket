@@ -16,6 +16,7 @@ Rails.application.routes.draw do
       scope :auth, path: "auth" do
         post "login" => "sessions#login"
         get "logout" => "sessions#logout"
+        get "valid" => "sessions#valid"
       end
 
       scope :users, path: "users" do
