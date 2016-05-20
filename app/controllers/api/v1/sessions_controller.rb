@@ -16,6 +16,10 @@ module Api
         render json: { "message": "Logged out successfully." }
       end
 
+      def valid
+        render json: { "message": "Token valid." }
+      end
+
       private
 
         def respond_with_command(auth_command)
