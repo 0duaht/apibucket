@@ -1,5 +1,4 @@
 class ApplicationController < ActionController::API
-  before_filter :add_cross_origin_headers
   include CanCan::ControllerAdditions
   include ActionController::Serialization
   attr_reader :current_user
@@ -11,12 +10,6 @@ class ApplicationController < ActionController::API
     else
       render json: request_auth.errors, status: :unauthorized
     end
-  end
-
-  def add_cross_origin_headers
-    response.headers["Access-Control-Allow-Origin"] =
-      request.headers["Origin"] || "*"
-    response.headers["Access-Control-Allow-Credentials"] = "true"
   end
 
   rescue_from CanCan::AccessDenied do
