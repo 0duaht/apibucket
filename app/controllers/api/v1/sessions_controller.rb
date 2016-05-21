@@ -1,7 +1,7 @@
 module Api
   module V1
     class SessionsController < ApplicationController
-      before_action :authenticate_token, only: [:logout]
+      before_action :authenticate_token, only: [:logout, :valid]
 
       def login
         auth_command = Api::UserAuthentication.call(
